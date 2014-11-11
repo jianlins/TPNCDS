@@ -3,6 +3,14 @@ package edu.utah.bmi;
 /**
  * This is the core class for TPN calculation, some of the functions are derived from WUSTL TPN Calculator
  * http://tpn.wustl.edu/calculator.html
+ * electrolytes, protein and fat functions are based on literatures, including:
+ * 
+ * MacKay M, Farr F, Jones K. Pediatric parenteral nutrition via computerized worksheet and automated compounding. Nutr Clin Pract. 2000;15:130–137. et al.
+ * and
+ * Safe Practices for Parenteral Nutrition Formulations. National Advisory Group on Standards and Practice Guidelines for Parenteral Nutrition. JPEN J Parenter Enteral Nutr.
+ * 1998;22(2):49–66. doi: 10.1177/014860719802200249. Available from: http://dx.doi.org/10.1177/014860719802200249. [PubMed] [Cross Ref]
+ * and
+ * http://www.who.int/nutrition/publications/guidelines/sodium_intake_printversion.pdf
  * 
  * @author Jianlin Shi
  * 

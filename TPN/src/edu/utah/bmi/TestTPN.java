@@ -2,6 +2,11 @@ package edu.utah.bmi;
 
 import java.util.Arrays;
 
+/**
+ * This is a demonstration of how to use
+ * @author Jianlin Shi
+ *
+ */
 public class TestTPN {
 
 	public static void main(String[] args) {
