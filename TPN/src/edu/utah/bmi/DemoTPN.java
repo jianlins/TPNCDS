@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
  * @author Jianlin Shi
  * 
  */
-public class TestTPN {
+public class DemoTPN {
 
 	public static void main(String[] args) throws IllegalArgumentException,
 			IllegalAccessException {
