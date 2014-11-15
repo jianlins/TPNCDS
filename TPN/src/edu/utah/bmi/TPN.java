@@ -18,33 +18,123 @@ package edu.utah.bmi;
 public class TPN {
 	public static final int FEMALE = 0;
 	public static final int MALE = 1;
+	// 1st input---extract from database
+	public double age, weight, height, stressor;
+	public int gender;
+	// calculated results for 1st output
+	public double surfaceArea, BMI, requiredfluid, requiredAdjustedKcal,idealBodyWeight,adjustedBodyWeight;
+	// calculated results for 2nd input
+	public double requiredSodiumPerKg, requiredPotassiumPerKg,
+			requiredChloridePerKg, requiredAcetatePerKg, requiredCalciumPerKg,
+			requiredMagnesiumPerKg, requiredPhosphorusPerKg,
+			requiredProteinPerKg, requiredFatPerKg;
+	// 2nd input----for users to adjust
+	public double inputFluid, inputKcal, inputSodiumPerKg, inputPotassiumPerKg,
+			inputChloridePerKg, inputAcetatePerKg, inputCalciumPerKg,
+			inputMagnesiumPerKg, inputPhosphorusPerKg, inputProteinPerKg,
+			inputFatPerKg;
+	// intermediate output
+	public double inputSodium_mEq, inputPotassium_mEq, inputChloride_mEq,
+			inputAcetate_mEq, inputCalcium_mEq, inputPhosphorus_mEq,
+			inputMagnesium_mEq, inputProtein_g, inputFat_g;
+	// 2nd output
+	public double actFluid, actKcal;
 
 	/**
-	 * calculate the TPN without lab test input
+	 * calculate the ingredient, Kcal, fluid requirements without lab test input
 	 * 
 	 * stressor=1.0, when Ventilated/Sedated
 	 * stressor=1.3, when No Stressors
 	 * stressor=1.4, when Cardiac Disorder or Chronic Lung Disease
 	 * stressor=1.7, when Burns
 	 * 
-	 * @return surfaceArea, BMI, fluid, kcal, sodium, potassium, calcium, magnesium, phosphorus, protein, fat
+	 * @return (in order) surfaceArea, BMI, fluid, kcal, sodium, potassium,chloride, acetate, calcium, magnesium, phosphorus, protein, fat
 	 */
-	public static double[] calWithoutLab(double age, int gender, double weight,
-			double height, double stressor) {
-		double[] output = new double[11];
-		output[0] = calSurfaceArea(weight, height);
-		output[1] = calBMI(weight, height);
-		output[2] = calRequiredFluid(weight, height);
-		output[3] = calRequiredAdjustedKcal(age, gender, weight, height,
-				stressor);
-		output[4] = requiredSodium(weight, height);
-		output[5] = requiredPotassium(weight, height);
-		output[6] = requiredCalcium(weight, height);
-		output[7] = requiredMagnesium(weight, height);
-		output[8] = requiredPhosphorus(weight, height);
-		output[9] = requiredProtein(weight, height);
-		output[10] = requiredFat(weight, height);
-		return output;
+
+	public TPN(double age, int gender, double weight, double height,
+			double stressor) {
+		this.age = age;
+		this.gender = gender;
+		this.weight = weight;
+		this.height = height;
+		this.stressor = stressor;
+	}
+
+	public void calWithoutLab() {		
+		calBodyWeights(gender,weight,height);
+		surfaceArea = calSurfaceArea(weight, height);
+		BMI = calBMI(weight, height);
+		requiredfluid = calRequiredFluid(weight, height);
+		requiredAdjustedKcal = calRequiredAdjustedKcal(age, gender, weight,
+				height, stressor);
+		requiredSodiumPerKg = requiredSodiumPerKg(age, weight);
+		requiredPotassiumPerKg = requiredPotassiumPerKg(age, weight);
+		requiredChloridePerKg = requiredSodiumPerKg;
+		requiredAcetatePerKg = requiredPotassiumPerKg;
+		requiredCalciumPerKg = requiredCalciumPerKg(age, weight);
+		requiredMagnesiumPerKg = requiredMagnesiumPerKg(age, weight);
+		requiredPhosphorusPerKg = requiredPhosphorusPerKg(age, weight);
+		requiredProteinPerKg = requiredProteinPerKg(age, weight);
+		requiredFatPerKg = requiredFatPerKg(age, weight);
+	}
+	
+	
+	public void useRecommendedInput() {
+		updateInput(requiredfluid, requiredAdjustedKcal, requiredSodiumPerKg,
+				requiredPotassiumPerKg, requiredChloridePerKg,
+				requiredAcetatePerKg, requiredCalciumPerKg,
+				requiredMagnesiumPerKg, requiredPhosphorusPerKg,
+				requiredProteinPerKg, requiredFatPerKg);
+	}
+
+	public void updateInput(double inputFluid, double inputKcal,
+			double inputSodium, double inputPotassium, double inputChloride,
+			double inputAcetate, double inputCalcium, double inputMagnesium,
+			double inputPhosphorus, double inputProtein, double inputFat) {
+		this.inputFluid = inputFluid;
+		this.inputKcal = inputKcal;
+		this.inputSodiumPerKg = inputSodium;
+		this.inputPotassiumPerKg = inputPotassium;
+		this.inputChloridePerKg = inputChloride;
+		this.inputAcetatePerKg = inputAcetate;
+		this.inputCalciumPerKg = inputCalcium;
+		this.inputMagnesiumPerKg = inputMagnesium;
+		this.inputPhosphorusPerKg = inputPhosphorus;
+		this.inputProteinPerKg = inputProtein;
+		this.inputFatPerKg = inputFat;
+
+		inputSodium_mEq = inputSodiumPerKg * weight;
+		inputPotassium_mEq = inputPotassiumPerKg * weight;
+		inputChloride_mEq = inputChloridePerKg * weight;
+		inputAcetate_mEq = inputAcetatePerKg * weight;
+		inputCalcium_mEq = inputCalciumPerKg * weight;
+		inputPhosphorus_mEq = inputPhosphorusPerKg * weight;
+		inputMagnesium_mEq = inputMagnesiumPerKg * weight;
+		inputProtein_g = inputProteinPerKg * weight;
+		inputFat_g = inputFatPerKg * weight;
+	}
+	
+	
+	/**
+	 * This formula is derived from Scott's notes, converted to metrics. 
+	 * https://uofu.app.box.com/files/0/f/2672749645/1/f_22770958675
+	 * @param gender
+	 * @param weight
+	 * @param height
+	 * @return adjustedBodyWeight, idealBodyWeight
+	 */
+	public void calBodyWeights(int gender, double weight,double height){		
+		if(gender==FEMALE){
+			idealBodyWeight=(45.5+2.3*(height*0.39-60));
+		}else{
+			idealBodyWeight=(50+2.3*(height*0.39-60));
+		}
+		adjustedBodyWeight=0.6*idealBodyWeight+0.4*weight;
+		
+//		rule from Scott's note
+		if(weight>1.3*idealBodyWeight){
+			weight=adjustedBodyWeight;
+		}
 	}
 
 	/**
@@ -54,7 +144,7 @@ public class TPN {
 	 * @param height
 	 * @return
 	 */
-	public static double calSurfaceArea(double weight, double height) {
+	public double calSurfaceArea(double weight, double height) {
 		return Math.round(Math.sqrt(weight * height) / 0.6) / 100.0;
 	}
 
@@ -65,7 +155,7 @@ public class TPN {
 	 * @param height
 	 * @return
 	 */
-	public static double calBMI(double weight, double height) {
+	public double calBMI(double weight, double height) {
 
 		return Math.round(100000 * weight / (height * height)) / 10.0;
 	}
@@ -76,9 +166,9 @@ public class TPN {
 	 * 
 	 * @param weight
 	 * @param height
-	 * @return
+	 * @return ml/day
 	 */
-	public static double calRequiredFluid(double weight, double height) {
+	public double calRequiredFluid(double weight, double height) {
 		double fluid = 0;
 		if (weight <= .75) {
 			fluid = 80 * weight;
@@ -119,9 +209,9 @@ public class TPN {
 	 *            stressor=1.4, when Cardiac Disorder or Chronic Lung Disease
 	 *            stressor=1.7, when Burns
 	 * 
-	 * @return
+	 * @return kcal/day
 	 */
-	public static double calRequiredAdjustedKcal(double age, int gender,
+	public double calRequiredAdjustedKcal(double age, int gender,
 			double weight, double height, double stressor) {
 		return Math.round(calRequiredRestKcal(age, gender, weight, height)
 				* stressor);
@@ -135,10 +225,10 @@ public class TPN {
 	 * @param gender
 	 * @param weight
 	 * @param height
-	 * @return
+	 * @return kcal/day
 	 */
-	public static double calRequiredRestKcal(double age, int gender,
-			double weight, double height) {
+	public double calRequiredRestKcal(double age, int gender, double weight,
+			double height) {
 		double kcal = 0;
 		if (weight <= .75) {
 			kcal = 30 * weight;
@@ -193,7 +283,7 @@ public class TPN {
 	 * @param weight
 	 * @return mEq/kg/day
 	 */
-	public static double requiredSodium(double age, double weight) {
+	public double requiredSodiumPerKg(double age, double weight) {
 		double sodiumInmEq = 0.0;
 		if (weight <= 2.5) {
 			sodiumInmEq = 4.0;
@@ -208,7 +298,7 @@ public class TPN {
 		} else {
 			sodiumInmEq = 2.0;
 		}
-		return sodiumInmEq * weight;
+		return sodiumInmEq;
 	}
 
 	/**
@@ -216,14 +306,14 @@ public class TPN {
 	 * @param weight
 	 * @return mEq/kg/day
 	 */
-	public static double requiredPotassium(double age, double weight) {
+	public double requiredPotassiumPerKg(double age, double weight) {
 		double potassiumInmEq = 0.0;
 		if (weight < 50) {
 			potassiumInmEq = 3.0;
 		} else {
 			potassiumInmEq = 1.5;
 		}
-		return potassiumInmEq * weight;
+		return potassiumInmEq;
 	}
 
 	/**
@@ -231,7 +321,7 @@ public class TPN {
 	 * @param weight
 	 * @return mEq/kg/day
 	 */
-	public static double requiredCalcium(double age, double weight) {
+	public double requiredCalciumPerKg(double age, double weight) {
 		double calciumInmEq = 0.0;
 		if (weight <= 2.5) {
 			calciumInmEq = 2.8;
@@ -246,7 +336,7 @@ public class TPN {
 		} else {
 			calciumInmEq = 0.3;
 		}
-		return calciumInmEq * weight;
+		return calciumInmEq;
 	}
 
 	/**
@@ -254,7 +344,7 @@ public class TPN {
 	 * @param weight
 	 * @return mEq/kg/day
 	 */
-	public static double requiredPhosphorus(double age, double weight) {
+	public double requiredPhosphorusPerKg(double age, double weight) {
 		double phosphorusInmEq = 0.0;
 		if (weight <= 2.5) {
 			phosphorusInmEq = 1.2;
@@ -269,7 +359,7 @@ public class TPN {
 		} else {
 			phosphorusInmEq = 0.3;
 		}
-		return phosphorusInmEq * weight;
+		return phosphorusInmEq;
 	}
 
 	/**
@@ -277,38 +367,40 @@ public class TPN {
 	 * @param weight
 	 * @return mEq/kg/day
 	 */
-	public static double requiredMagnesium(double age, double weight) {
-		return 0.3 * weight;
+	public double requiredMagnesiumPerKg(double age, double weight) {
+		return 0.3;
 	}
 
 	/**
 	 * @param age
 	 * @param weight
-	 * @return mg/kg/day
+	 * @return g/kg/day
 	 */
-	public static double requiredProtein(double age, double weight) {
+	public double requiredProteinPerKg(double age, double weight) {
 		double proteinInmg = 0.0;
-		if (weight < 50) {
+		if (weight < 20) {
 			proteinInmg = 2.0;
+		} else if (weight < 50) {
+			proteinInmg = 1.25;
 		} else {
-			proteinInmg = 1.0;
+			proteinInmg = 0.75;
 		}
-		return proteinInmg * weight;
+		return proteinInmg;
 	}
 
 	/**
 	 * @param age
 	 * @param weight
-	 * @return mg/kg/day
+	 * @return g/kg/day
 	 */
-	public static double requiredFat(double age, double weight) {
+	public double requiredFatPerKg(double age, double weight) {
 		double fatInmg = 0.0;
 		if (weight < 50) {
 			fatInmg = 2.0;
 		} else {
-			fatInmg = 1.0;
+			fatInmg = 0.5;
 		}
-		return fatInmg * weight;
+		return fatInmg;
 	}
 
 }
