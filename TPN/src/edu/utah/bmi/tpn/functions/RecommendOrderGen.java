@@ -1,7 +1,11 @@
-package edu.utah.bmi;
+package edu.utah.bmi.tpn.functions;
 
 import java.util.ArrayList;
 import java.util.TreeMap;
+
+import edu.utah.bmi.tpn.objects.Alerts;
+import edu.utah.bmi.tpn.objects.IngredientReferenceRange;
+import edu.utah.bmi.tpn.objects.Patient;
 
 /**
  * Based on ingradient requirment, generate recommend medication list,

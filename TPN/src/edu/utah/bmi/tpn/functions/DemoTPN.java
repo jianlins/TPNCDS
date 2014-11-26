@@ -1,6 +1,8 @@
-package edu.utah.bmi;
+package edu.utah.bmi.tpn.functions;
 
 import java.lang.reflect.Field;
+
+import edu.utah.bmi.tpn.objects.Patient;
 
 /**
  * This is a demonstration of how to use

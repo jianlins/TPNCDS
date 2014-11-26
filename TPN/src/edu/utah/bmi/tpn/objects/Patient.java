@@ -1,4 +1,4 @@
-package edu.utah.bmi;
+package edu.utah.bmi.tpn.objects;
 
 /**
  * This is the core class for TPN calculation, some of the functions are derived from WUSTL TPN Calculator
