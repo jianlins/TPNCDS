@@ -13,17 +13,20 @@ public class DemoTPN {
 	public static void main(String[] args) throws IllegalArgumentException,
 			IllegalAccessException {
 		// TODO Auto-generated method stub
-		TPN patient1 = new TPN(35, 1, 60, 175, 1.3);
-		patient1.calWithoutLab();
+		Patient patient1 = new Patient(35, 1, 60, 175, 1.3);
+		TPNCalculator.calWithoutLab(patient1);
+		
 
 		// use default input for following TPN calculation
-		patient1.useRecommendedInput();
+		TPNCalculator.useRecommendedInput(patient1);
 
 		// *******you can adjust ingredients before calculate recommended orders through:*******
 		// patient1.updateInput(.....);
 
 		// calculate the needed medications and actual fluids, kcal.
 		RecommendOrderGen.calculate(patient1);
+		
+		
 
 		// print out the results:
 		Field[] fields = patient1.getClass().getDeclaredFields();
@@ -31,7 +34,7 @@ public class DemoTPN {
 			System.out.println(field.getName() + "\t" + field.get(patient1));
 		}
 
-		RecommendOrderGen.printMeds();
+//		RecommendOrderGen.printMeds();
 	}
 
 }
