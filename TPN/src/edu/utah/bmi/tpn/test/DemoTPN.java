@@ -1,7 +1,9 @@
-package edu.utah.bmi.tpn.functions;
+package edu.utah.bmi.tpn.test;
 
 import java.lang.reflect.Field;
 
+import edu.utah.bmi.tpn.functions.RecommendOrderGen;
+import edu.utah.bmi.tpn.functions.TPNCalculator;
 import edu.utah.bmi.tpn.objects.Patient;
 
 /**
@@ -17,6 +19,8 @@ public class DemoTPN {
 		// TODO Auto-generated method stub
 		Patient patient1 = new Patient(35, 1, 60, 175, 1.3);
 		TPNCalculator.calWithoutLab(patient1);
+		
+		System.out.println("Patient's CrCl = "+TPNCalculator.calculateCrCl(patient1,1.1));
 		
 
 		// use default input for following TPN calculation
@@ -36,6 +40,7 @@ public class DemoTPN {
 			System.out.println(field.getName() + "\t" + field.get(patient1));
 		}
 
+		RecommendOrderGen.dosageAlerts(patient1);
 //		RecommendOrderGen.printMeds();
 	}
 

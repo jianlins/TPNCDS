@@ -1,6 +1,11 @@
 package edu.utah.bmi.tpn.functions;
 
-import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import edu.utah.bmi.tpn.objects.Alerts;
@@ -44,7 +49,10 @@ public class RecommendOrderGen {
 	public static double med27370, med19726, med17421, med17371, med12722,
 			med3751, med19699, med19769, med17358, med251304, med6392;
 	// The csv file that store the reference range information;
-	public static final String ReferenceFile = "";
+	public static final String ReferenceFile = "resources/TPNReferences.csv";
+
+	public static final int NotSpecified = -1;
+
 	// When referenceRanges is called at the 1st time, it will be initiated through reading ReferenceFile .
 	public static TreeMap<String, IngredientReferenceRange> referenceRanges = new TreeMap<String, IngredientReferenceRange>();
 
@@ -76,7 +84,7 @@ public class RecommendOrderGen {
 		// 19699 SODIUM ACETATE 2 MEQ/ML IV SOLN 2 mEq
 
 		// 19769 SODIUM PHOSPHATE 3 MMOLE/ML IV SOLN 3 mmol 4 mEq
-		med19769 = patient.inputP_mEq / 4;
+		med19769 = patient.inputP_mmol / 4;
 		// 17358 POTASSIUM ACETATE 2 MEQ/ML IV SOLN 2 mEq
 		med17358 = patient.inputK_mEq / 2;
 		// 251304 CLINISOL SF 15 % IV SOLN 0.15 g 0.6 kcal
@@ -118,25 +126,29 @@ public class RecommendOrderGen {
 
 		// calculate the 2nd table;
 
-		pt.na_meq_l = pt.inputNa_mEq / pt.inputFluid;
+		pt.na_meq_l = pt.inputNa_mEq / pt.inputTotalVolume;
 		pt.k_meq_kg_h = pt.inputKPerKg / pt.hours;
-		pt.k_meq_l = pt.inputK_mEq / pt.inputFluid;
+		pt.k_meq_l = pt.inputK_mEq / pt.inputTotalVolume;
 
 		// need to check if the factor is 6.25;
 		pt.npcal_g_nit = (pt.lipid_g_day * 2 + pt.dextrose_g_day * 2.38)
 				/ pt.protein_g_day * 6.25;
+
+		pt.kcal_n_ratio = (pt.lipid_g_day * 2 + pt.dextrose_g_day * 2.38 + pt.protein_g_day * 0.6)
+				/ pt.protein_g_day * 6.25;
+
 		// need to check (P*2 because NaPOS has been *2 when computing Na)
 		pt.tpn_wo_lipid_mosm_l = (pt.protein_g_day * 10 + pt.dextrose_g_day * 5
-				+ pt.inputNa_mEq * 2 + pt.inputP_mEq * 2 + pt.inputMg_mEq
+				+ pt.inputNa_mEq * 2 + pt.inputP_mmol * 2 + pt.inputMg_mEq
 				+ pt.inputK_mEq * 2 + pt.inputCa_mEq * 1.46)
-				/ pt.inputFluid;
+				/ pt.inputTotalVolume;
 
-		pt.ca_mg_kg_day = pt.inputCaPerKg;
-		pt.p_mg_kg_day = pt.inputPPerKg;
-		pt.ca_mg_p_mg = pt.ca_mg_kg_day / pt.p_mg_kg_day;
+		pt.ca_mEq_day = pt.inputCa_mEq;
+		pt.p_mmol_day = pt.inputP_mmol;
+		pt.ca_p_ratio = pt.ca_mEq_day / pt.p_mmol_day;
 
-		// need to check this function
-		pt.ca_p_perc_aa = (pt.ca_mg_kg_day * pt.p_mg_kg_day) / pt.protein_g_kg;
+		// need to check units of this function
+		pt.ca_mg_x_p_mg = pt.ca_mEq_day * pt.p_mmol_day;
 
 		// pt.precip_limit=***
 		// need to check????
@@ -149,12 +161,128 @@ public class RecommendOrderGen {
 	 * @return
 	 */
 	public static Alerts dosageAlerts(Patient pt) {
-		if (referenceRanges == null) {
-
+		if (referenceRanges == null || referenceRanges.size() == 0) {
+			initiateReferences(ReferenceFile);
 		}
 		Alerts alerts = new Alerts();
+		alerts.clear();
+		// iterate all applicable reference ranges to check the variables in Patient object
+		for (Entry<String, IngredientReferenceRange> entry : referenceRanges
+				.entrySet()) {
+			IngredientReferenceRange irr = entry.getValue();
+
+			String checkingVariableName = irr.checkingVariableName;
+
+			System.out.println("checking ingredient: " + checkingVariableName);
+			try {
+				// if the variable does exists in Patient class
+				if (Patient.class.getField(checkingVariableName) != null) {
+					// if the patient's age is within the range or the age range is not specified in knowledge base
+					if ((irr.ageLowerBound == NotSpecified || pt.age > irr.ageLowerBound)
+							&& (irr.ageHigherBound == NotSpecified || pt.age <= irr.ageHigherBound)
+							// if the patient's iv method is the same as knowledge base or the iv method is not specified in knowledge base
+							&& (pt.ivType == irr.ivType || irr.ivType == NotSpecified)
+							// if the patient's gender is the same as knowledge base or the gender is not specified in knowledge base
+							&& (pt.gender == irr.gender || irr.gender == NotSpecified)) {
+
+						System.out.print("This patient value is "
+								+ Patient.class.getField(checkingVariableName)
+										.get(pt));
+
+						// there can be a case that when one variable is checked, but several variables are involved. e.g. "Ca:P ratio"
+						if ((Double) Patient.class.getField(
+								checkingVariableName).get(pt) >= irr.unacceptable) {
+
+							alerts.addUnacceptable(Arrays
+									.asList(checkingVariableName
+											.split("[,;\\s]")));
+						} else if ((Double) Patient.class.getField(
+								checkingVariableName).get(pt) >= irr.warning) {
+
+							alerts.addWarning(Arrays
+									.asList(checkingVariableName
+											.split("[,;\\s]")));
+						} else {
+							System.out
+									.println(". The dosage is within reference range.");
+						}
+					}
+				} else {
+					System.out
+							.println("Class Patient doesn't have any field named: "
+									+ checkingVariableName);
+				}
+
+			} catch (NoSuchFieldException | SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
 		return alerts;
+	}
+
+	/**
+	 * Finish additional variable calculation for dosage checking
+	 * 
+	 * @param pt
+	 */
+	private static void calculation4Cheking(Patient pt) {
+		pt.inputNa_mEq_l=pt.inputNa_mEq/pt.inputTotalVolume;
+		pt.inputK_mEq_l=pt.inputK_mEq/pt.inputTotalVolume;
+		pt.inputCl_mEq_l=pt.inputCl_mEq/pt.inputTotalVolume;
+		pt.inputAcet_mEq_l=pt.inputAcet_mEq/pt.inputTotalVolume;
+		pt.inputZn_mg_l=pt.inputZn_mg/pt.inputTotalVolume;
+		pt.inputRanitidine_mg_Kg=pt.inputRanitidine/pt.weight;
+		
+	}
+
+	/**
+	 * Read reference range from ReferenceFile
+	 * 
+	 * @param ReferenceFile
+	 * 
+	 * @return
+	 */
+	public static void initiateReferences(String ReferenceFile) {
+		BufferedReader csvReader = null;
+		String line = "";
+		try {
+
+			csvReader = new BufferedReader(new FileReader(ReferenceFile));
+			while ((line = csvReader.readLine()) != null) {
+				// skip first title row and blank rows
+				if (line.startsWith("description") || line.startsWith(",,"))
+					continue;
+				// use comma as separator
+				String[] reference = line.split(",", -1);
+
+				IngredientReferenceRange irr = new IngredientReferenceRange(
+						reference);
+				// ignore information that don't have a variableName
+				if (!irr.checkingVariableName.equals(""))
+					referenceRanges.put(irr.checkingVariableName, irr.clone());
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (csvReader != null) {
+				try {
+					csvReader.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
 	}
 
 	public static void printMeds() {
