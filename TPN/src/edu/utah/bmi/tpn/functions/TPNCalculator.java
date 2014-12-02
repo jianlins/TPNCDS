@@ -220,7 +220,7 @@ public class TPNCalculator {
 				pt.requiredIo, pt.requiredFe, pt.requiredVitMix,
 				pt.requiredVitK, pt.requiredVitC, pt.requiredVolumePerKg,
 				pt.requiredLipidPerKg, pt.requiredRanitidine,
-				pt.requiredInsulin, pt.otherFluid_ml, 12, NotSpecified);
+				pt.requiredInsulin, pt.otherFluid_ml, 12,2, NotSpecified);
 	}
 
 	public static void updateInput(Patient pt, double inputProteinPerKg,
@@ -232,7 +232,7 @@ public class TPNCalculator {
 			double inputVitMix, double inputVitK, double inputVitC,
 			double inputVolumePerKg, double inputLipidPerKg,
 			double inputRanitidine, double inputInsulin, double otherFluid_ml,
-			double hours, int ivType) {
+			double pnhours, double lipidhours,int ivType) {
 		// update inputTotalVolume_ml and inputKcal based on which variable the user changes
 		// !!!!!!make sure each time only one variable is changed!!!!
 		if (pt.inputVolumePerKg != inputVolumePerKg) {
@@ -305,7 +305,8 @@ public class TPNCalculator {
 		pt.inputRanitidine = inputRanitidine;
 		pt.otherFluid_ml = otherFluid_ml;
 
-		pt.hours = hours;
+		pt.pnhours = pnhours;
+		pt.lipidhours=lipidhours;
 
 		pt.inputNa_mEq = pt.inputNaPerKg * pt.weight;
 		pt.inputK_mEq = pt.inputKPerKg * pt.weight;

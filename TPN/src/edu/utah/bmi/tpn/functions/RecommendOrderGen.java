@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import edu.utah.bmi.tpn.objects.Alerts;
+import edu.utah.bmi.tpn.objects.IVTYPE;
 import edu.utah.bmi.tpn.objects.IngredientReferenceRange;
 import edu.utah.bmi.tpn.objects.Patient;
 
@@ -149,9 +150,9 @@ public class RecommendOrderGen {
 		pt.total_perc_cal = 100;
 
 		// calculate the 2nd middle table;
-		pt.dex_mgKgMin = pt.dextrose_g_kg * 1000 / (pt.hours * 60);
+		pt.dex_mgKgMin = pt.dextrose_g_kg * 1000 / (pt.pnhours * 60);
 		pt.na_meq_l = pt.inputNa_mEq / pt.inputTotalVolume_ml;
-		pt.k_meq_kg_h = pt.inputKPerKg / pt.hours;
+		pt.k_meq_kg_h = pt.inputKPerKg / pt.pnhours;
 		pt.k_meq_l = pt.inputK_mEq / pt.inputTotalVolume_ml;
 
 		pt.cl_mEq_l = pt.inputCl_mEq / pt.inputVolumePerKg;
@@ -169,6 +170,12 @@ public class RecommendOrderGen {
 				/ pt.protein_g_day * 6.25;
 		// faked number for now
 		pt.precip_limit = 78.0;
+		
+		pt.lipid_rate=pt.lipid_ml_day/pt.lipidhours;
+		pt.pn_rate=pt.pn_ml_day/pt.lipidhours;
+		
+		
+		
 
 	}
 
@@ -200,7 +207,7 @@ public class RecommendOrderGen {
 					if ((irr.ageLowerBound == NotSpecified || pt.age > irr.ageLowerBound)
 							&& (irr.ageHigherBound == NotSpecified || pt.age <= irr.ageHigherBound)
 							// if the patient's iv method is the same as knowledge base or the iv method is not specified in knowledge base
-							&& ((pt.ivType == irr.ivType || irr.ivType == NotSpecified) && irr.ivType != -2)
+							&& ((pt.ivType == irr.ivType || irr.ivType == IVTYPE.NotSpecified) && irr.ivType != IVTYPE.Deep)
 							// if the patient's gender is the same as knowledge base or the gender is not specified in knowledge base
 							&& (pt.gender == irr.gender || irr.gender == NotSpecified)) {
 						

@@ -5,6 +5,7 @@ import java.lang.reflect.Field;
 import edu.utah.bmi.tpn.functions.RecommendOrderGen;
 import edu.utah.bmi.tpn.functions.TPNCalculator;
 import edu.utah.bmi.tpn.objects.Alerts;
+import edu.utah.bmi.tpn.objects.IVTYPE;
 import edu.utah.bmi.tpn.objects.Patient;
 
 /**
@@ -36,6 +37,28 @@ public class DemoTPN {
 		printVariables(patient1);
 
 		// *******you can adjust ingredients before calculate recommended orders through:*******
+
+		/**
+		 * you can set ivtype in updateInput:
+		 * 
+		 * 
+		 * 
+		 * updateInput(Patient pt, double inputProteinPerKg,
+		 * double inputDextrose_perc, double inputCysMgPerg,
+		 * double inputNaPerKg, double inputKPerKg, double inputClPerKg,
+		 * double inputAcetPerKg, double inputMgPerKg, double inputCalcium,
+		 * double inputPPerKg, double inputZn, double inputCu, double inputMn,
+		 * double inputCr, double inputSel, double inputIo, double inputFe,
+		 * double inputVitMix, double inputVitK, double inputVitC,
+		 * double inputVolumePerKg, double inputLipidPerKg,
+		 * double inputRanitidine, double inputInsulin, double otherFluid_ml,
+		 * double pnhours, double lipidhours,int ivType) {
+		 * 
+		 * Or
+		 * 
+		 * patient1.ivType=IVTYPE.CentralLine;
+		 */
+
 		// TPNCalculator.updateInput();
 
 		// calculate the needed medications and actual fluids, kcal.
@@ -44,15 +67,13 @@ public class DemoTPN {
 		printVariables(patient1);
 		// test warning:
 		patient1.inputKPerKg = 3.5;
-		
+
 		// test unacceptable:
-//		patient1.inputKPerKg =75;
+		// patient1.inputKPerKg =75;
 
 		Alerts alerts = RecommendOrderGen.dosageAlerts(patient1);
 		// RecommendOrderGen.printMeds();
-		System.out.println("\n\n"+alerts.toString());
-
-		
+		System.out.println("\n\n" + alerts.toString());
 
 	}
 

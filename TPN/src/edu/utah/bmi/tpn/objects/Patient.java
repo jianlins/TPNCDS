@@ -9,9 +9,7 @@ package edu.utah.bmi.tpn.objects;
  */
 public class Patient {
 
-	public final int CentralLine = 1;
-	public final int PeripheralLine = 0;
-	public final int Deep=2;
+
 	public final int NotSpecified = -1;
 	// 1st input---extract from database
 	public double age, weight, height, stressor, sCr;
@@ -53,7 +51,8 @@ public class Patient {
 			inputAlbumin, inputInsulin,inputRanitidine,inputVolumePerKg;
 
 	// how many hours are planned to iv
-	public double hours;
+	public double pnhours,lipidhours;
+	
 
 
 	// intermediate output
@@ -81,6 +80,8 @@ public class Patient {
 
 	public double ca_mEq_day, p_mmol_day, ca_p_ratio, ca_mg_x_p_mg,
 			precip_limit;
+	
+	public double lipid_rate, pn_rate;
 
 	// *********************************************************** //
 
