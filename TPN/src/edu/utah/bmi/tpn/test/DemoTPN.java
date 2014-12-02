@@ -43,10 +43,10 @@ public class DemoTPN {
 
 		printVariables(patient1);
 		// test warning:
-		patient1.inputKPerKg = 35;
+		patient1.inputKPerKg = 3.5;
 		
-		// test warning:
-				patient1.inputKPerKg =75;
+		// test unacceptable:
+//		patient1.inputKPerKg =75;
 
 		Alerts alerts = RecommendOrderGen.dosageAlerts(patient1);
 		// RecommendOrderGen.printMeds();
