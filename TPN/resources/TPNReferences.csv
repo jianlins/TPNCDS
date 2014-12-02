@@ -1,0 +1,55 @@
+description,checkingVariableName,alertingVariableName,agelowerbound(not specified:-1),agehigherbound(not specified:-1),gender(F:0;M:1; not specified: -1),ingredient_code,warning,unacceptable,vitype,guidelineLowerBound,guidelineHigherBound
+Sodium (mEq/L),inputNa_mEq_l,inputNaPerKg,,,,39972003,154,154,,,
+Potassium (mEq/L),inputK_mEq_l,inputKPerKg,,,,88480006,80,250,,,
+Chloride (mEq/l),inputCl_mEq_l,inputClPerKg,,,,50213009,154,,,,
+Acetate (mEq/l),inputAcet_mEq_l,inputAcetPerKg,,,,54526002,80,,,,
+Magnesium (mEq/d),inputMg_mEq,inputMgPerKg,,,,72717003,16,,,,
+Calcium (mEq/d),inputCa_mEq,inputCaPerKg,,,,5540006,,35,,,
+Phosphorus (mM/d),inputP_mmol,inputPPerKg,,,,29917007,,30,,,
+Zinc (mg/d),inputZn,inputZn,,,,86739005,2.5,30,,,
+Zinc (mg/l),inputZn_mg_l,inputZn,,,,86739005,,10,,,
+Copper (mg/d),inputCu,inputCu,,,,66925006,,1.5,,,
+Chromium (µg/d),inputCr,inputCr,,,,111070004,15,20,,,
+Manganese (µg/d),inputMn,inputMn,,,,87869004,150,200,,,
+Selenium (µg/d),inputSel,inputSel,,,,22038003,40,200,,,
+Heparin (U/kg per hour),,,,,,372877000,10,,,,
+Lipids (% o calories),lipid_perc_cal,inputLipidPerKg  inputDextrose_perc,,,,259555005,50,,,,
+Insulin (U/ per hour) infants,inputInsulin,inputInsulin,0,1,,67866001,0.14,0.2,,0.05,0.1
+Peripheral line {mOsm/l),threeInOne_mosm_l,inputDextrose_perc inputVolumePerKg inputLipidPerKg,,,,,900,950,0,,900
+Central line (dextrose %),inputDextrose_perc,inputDextrose_perc inputVolumePerKg,,,,,25,,1,,25
+,,,,,,,,,,,
+Dextrose (concentration %),inputDextrose_perc,inputDextrose_perc inputVolumePerKg,,,,67079006,25,35,,3,25
+Glucose load (mg/kg per minute),dex_mgKgMin,inputDextrose_perc hours,,,,,,20,,,
+TrophAmine (l/kg per day),,,,,,,3,3.5,,0.5,2.5
+Aminosyn (g/kg per day),,,,,,,3,3.5,,0.5,2.5
+Nephra mine (g/kg per day),,,,,,,1,1,,0.5,1
+Hepatamine  (g/kg per day),,,,,,,2.5,3,,0.5,2
+Freamine HBC (g/kg per day),,,,,,,2.5,3,,0.5,2
+Cysteine (mg/g protein),inputCysMgPerg,inputCysMgPerg,,,,5932006,60,75,,,50
+Sodium (mEq/ kg per day),,,,,,39972003,,,,2,4
+Potassium (mEq/kg per day),inputKPerKg,inputKPerKg,,,,88480006,3,4,,2,3
+Chloride (mEq/kg per day),,,,,,50213009,,,,2,4
+Acetate (mEq/kg per day),,,,,,54526002,,,,2,4
+Magnesium (mEq/kg per day),,,,,,72717003,,,,0.3,0.5
+Calcium (mEq/kg per day),inputCaPerKg,inputCaPerKg,,,,5540006,3,,,1,3
+Phosphorus (mM/kg per day),inputPPerKg,inputPPerKg,,,,29917007,3,,,0.5,3
+Zinc (µg/kg per day),,,,,,86739005,,,,100,90
+Copper (µg/kg per day),inputCu,inputCu,,,,66925006,30,,,,20
+Chromium (µg/kg per day),,,,,,111070004,,,,0.14,0.2
+Manganese (µg/kg per day),,,,,,87869004,,,,2,10
+Selenium (µg/kg per day),,,,,,22038003,,,,3,6
+Iodine (µf kg per day),inputIo,inputIo,,,,44588005,10,15,,,3
+Iron (mg/ g per day),inputFe,inputFe,,,,3829006,0.2,0.5,,0.1,0.2
+MVl-1 2 (ml),inputVitMix,inputVitMix,18,150,,,20,20,,,10
+MVl-ped (ml),inputVitMix,inputVitMix,0,18,,,10,10,,,5
+Vitamin K (µg/d),,,,,,,200,,,,200
+Lipids !pm/kg per day),inputLipidPerKg,inputLipidPerKg,,,,259555005,3.5,4,,1,3.5
+Volume (ml/kg per day),inputVolumePerKg,inputVolumePerKg,,,,,200,200,,20,180
+Cimetidine (mg/kg per day) neonates,,,,,,373541007,20,,,10,20
+(mg/kg per day) infants,,,,,,,40,,,20,40
+Ranitidine (mg/kg per day),inputRanitidine,inputRanitidine,,,,372755005,4,,,0.4,4
+Metoclopramide  (mg/kg per day),,,,,,372776000,0.5,,,,0.4
+Carnitine (mg/kg per day),,,,,,59888006,20,,,10,15
+Calorie/nitrogen  ratio,kcal_n_ratio,inputDextrose_perc inputLipidPerKg inputProteinPerKg,,,,,300,400,,125,250
+Ca:P04/li mit,precip_limit,inputCaPerKg inputPPerKg,,,,,95,100,,0,95
+Peripheral line (dextrose %),inputDextrose_perc,inputDextrose_perc inputVolumePerKg,,,,,12.5,13,,0,12.5
