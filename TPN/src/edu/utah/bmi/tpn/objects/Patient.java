@@ -11,6 +11,7 @@ public class Patient {
 
 	public final int CentralLine = 1;
 	public final int PeripheralLine = 0;
+	public final int Deep=2;
 	public final int NotSpecified = -1;
 	// 1st input---extract from database
 	public double age, weight, height, stressor, sCr;
@@ -42,12 +43,12 @@ public class Patient {
 	
 	// 2nd input----for users to adjust
 	public double inputProteinPerKg,inputDextrose_perc,inputCysMgPerg;
-	public double inputTotalVolume, inputKcal, inputNaPerKg, inputKPerKg,
+	public double inputTotalVolume_ml, inputKcal, inputNaPerKg, inputKPerKg,
 			inputClPerKg, inputAcetPerKg, inputCaPerKg, inputMgPerKg,
 			inputPPerKg, inputLipidPerKg;
 
 	// 2nd input (other ingredient)----for users to adjust
-	public double inputZn_mg, inputCu, inputMn, inputCr, inputSel, inputIo,
+	public double inputZn, inputCu, inputMn, inputCr, inputSel, inputIo,
 			inputFe, inputVitMix, inputVitK, inputVitC, 
 			inputAlbumin, inputInsulin,inputRanitidine,inputVolumePerKg;
 
@@ -68,18 +69,18 @@ public class Patient {
 	public double pn_ml_kg, pn_ml_day, lipid_ml_kg, lipid_ml_day, total_ml_kg,
 			total_ml_day;
 
-	public double tpn_wo_lipid_mosm_l;
+	public double twoInOne_mosm_l,lipid_mosm_l,threeInOne_mosm_l;
 
 	public double dextrose_g_day, protein_g_day, lipid_g_day, total_g_day;
 	public double dextrose_g_kg, protein_g_kg, lipid_g_kg, total_g_kg;
 	public double dextrose_cal_kg, protein_cal_kg, lipid_cal_kg, total_cal_kg;
 	public double dextrose_perc_cal, protein_perc_cal, lipid_perc_cal,
 			total_perc_cal;
-	public double dex_mgKgMin, na_meq_l, k_meq_kg_h, k_meq_l, npcal_g_nit,
+	public double dex_mgKgMin, na_meq_l, k_meq_kg_h, k_meq_l, cl_mEq_l, npcal_g_nit,
 			kcal_n_ratio;
 
 	public double ca_mEq_day, p_mmol_day, ca_p_ratio, ca_mg_x_p_mg,
-			precip_limit, al_mcg_kg_day;
+			precip_limit;
 
 	// *********************************************************** //
 

@@ -94,24 +94,48 @@ public class RecommendOrderGen {
 		med19726 = patient.inputNa_mEq / 4 - med19769;
 
 		// 6392 DEXTROSE 70 % IV SOLN 0.7 g 2.38 kcal
-		med6392 = (patient.inputKcal - med27370 * 2) / 2.38;
+		if (patient.inputDextrose_perc == 0) {
+			med6392 = (patient.inputKcal - med27370 * 2) / 2.38;
+			patient.inputDextrose_perc = med6392 / patient.inputVolumePerKg;
+		} else {
+			med6392 = patient.inputVolumePerKg * patient.weight
+					* patient.inputDextrose_perc;
+		}
+		// (patient.inputKcal - med27370 * 2) / 2.38;
 
-		setPatientPrescription(patient);
+		outputMetrics(patient);
 
 	}
 
-	private static void setPatientPrescription(Patient pt) {
+	private static void outputMetrics(Patient pt) {
 
-		// calculate the first table;
+		// calculate the top left table;
+		pt.lipid_ml_day = med27370;
+		pt.total_ml_day = pt.inputVolumePerKg * pt.weight;
+		pt.pn_ml_day = pt.total_ml_day - pt.lipid_ml_day;
 
-		// need to be checked all following calculation is based on these three variables.
+		pt.lipid_ml_kg = pt.lipid_ml_day / pt.weight;
+		pt.pn_ml_kg = pt.pn_ml_day / pt.weight;
+		pt.total_ml_kg = pt.total_ml_day / pt.weight;
+
+		// calculate the top right table;
+		pt.twoInOne_mosm_l = (pt.protein_g_day * 10 + pt.dextrose_g_day * 5
+				+ pt.inputNa_mEq * 2 + pt.inputP_mmol * 2 + pt.inputMg_mEq
+				+ pt.inputK_mEq * 2 + pt.inputCa_mEq * 1.46)
+				/ pt.inputTotalVolume_ml;
+		pt.lipid_mosm_l = pt.lipid_ml_day * 0.26 / pt.inputTotalVolume_ml;
+		pt.threeInOne_mosm_l = pt.twoInOne_mosm_l + pt.lipid_mosm_l;
+
+		// calculate middle table
 		pt.lipid_g_day = pt.inputLipid_g;
 		pt.dextrose_g_day = med6392 * 0.7;
 		pt.protein_g_day = med251304 * 0.15;
+		pt.total_g_day = pt.lipid_g_day + pt.dextrose_g_day + pt.protein_g_day;
 
 		pt.dextrose_g_kg = pt.dextrose_g_day / pt.weight;
 		pt.protein_g_kg = pt.protein_g_day / pt.weight;
 		pt.lipid_g_kg = pt.lipid_g_day / pt.weight;
+		pt.total_g_kg = pt.total_g_day / pt.weight;
 
 		pt.dextrose_cal_kg = pt.dextrose_g_kg * 2.38;
 		pt.protein_cal_kg = pt.protein_g_kg * 0.6;
@@ -124,35 +148,28 @@ public class RecommendOrderGen {
 		pt.lipid_perc_cal = pt.lipid_cal_kg / pt.total_cal_kg * 100;
 		pt.total_perc_cal = 100;
 
-		// calculate the 2nd table;
-
-		pt.na_meq_l = pt.inputNa_mEq / pt.inputTotalVolume;
+		// calculate the 2nd middle table;
+		pt.dex_mgKgMin = pt.dextrose_g_kg * 1000 / (pt.hours * 60);
+		pt.na_meq_l = pt.inputNa_mEq / pt.inputTotalVolume_ml;
 		pt.k_meq_kg_h = pt.inputKPerKg / pt.hours;
-		pt.k_meq_l = pt.inputK_mEq / pt.inputTotalVolume;
+		pt.k_meq_l = pt.inputK_mEq / pt.inputTotalVolume_ml;
 
-		// need to check if the factor is 6.25;
-		pt.npcal_g_nit = (pt.lipid_g_day * 2 + pt.dextrose_g_day * 2.38)
-				/ pt.protein_g_day * 6.25;
+		pt.cl_mEq_l = pt.inputCl_mEq / pt.inputVolumePerKg;
 
 		pt.kcal_n_ratio = (pt.lipid_g_day * 2 + pt.dextrose_g_day * 2.38 + pt.protein_g_day * 0.6)
 				/ pt.protein_g_day * 6.25;
 
-		// need to check (P*2 because NaPOS has been *2 when computing Na)
-		pt.tpn_wo_lipid_mosm_l = (pt.protein_g_day * 10 + pt.dextrose_g_day * 5
-				+ pt.inputNa_mEq * 2 + pt.inputP_mmol * 2 + pt.inputMg_mEq
-				+ pt.inputK_mEq * 2 + pt.inputCa_mEq * 1.46)
-				/ pt.inputTotalVolume;
-
 		pt.ca_mEq_day = pt.inputCa_mEq;
 		pt.p_mmol_day = pt.inputP_mmol;
 		pt.ca_p_ratio = pt.ca_mEq_day / pt.p_mmol_day;
+		pt.ca_mg_x_p_mg = pt.ca_mEq_day * 20 * pt.p_mmol_day / 31;
 
-		// need to check units of this function
-		pt.ca_mg_x_p_mg = pt.ca_mEq_day * pt.p_mmol_day;
+		// need to check if the factor is 6.25;
+		pt.npcal_g_nit = (pt.lipid_g_day * 2 + pt.dextrose_g_day * 2.38)
+				/ pt.protein_g_day * 6.25;
+		// faked number for now
+		pt.precip_limit = 78.0;
 
-		// pt.precip_limit=***
-		// need to check????
-		pt.al_mcg_kg_day = pt.requiredAlbumin * 1000000;
 	}
 
 	/**
@@ -164,6 +181,7 @@ public class RecommendOrderGen {
 		if (referenceRanges == null || referenceRanges.size() == 0) {
 			initiateReferences(ReferenceFile);
 		}
+		calculation4Cheking(pt);
 		Alerts alerts = new Alerts();
 		alerts.clear();
 		// iterate all applicable reference ranges to check the variables in Patient object
@@ -173,7 +191,8 @@ public class RecommendOrderGen {
 
 			String checkingVariableName = irr.checkingVariableName;
 
-			System.out.println("checking ingredient: " + checkingVariableName);
+			System.out.print("checking ingredient: " + checkingVariableName
+					+ "\t");
 			try {
 				// if the variable does exists in Patient class
 				if (Patient.class.getField(checkingVariableName) != null) {
@@ -181,30 +200,32 @@ public class RecommendOrderGen {
 					if ((irr.ageLowerBound == NotSpecified || pt.age > irr.ageLowerBound)
 							&& (irr.ageHigherBound == NotSpecified || pt.age <= irr.ageHigherBound)
 							// if the patient's iv method is the same as knowledge base or the iv method is not specified in knowledge base
-							&& (pt.ivType == irr.ivType || irr.ivType == NotSpecified)
+							&& ((pt.ivType == irr.ivType || irr.ivType == NotSpecified) && irr.ivType != -2)
 							// if the patient's gender is the same as knowledge base or the gender is not specified in knowledge base
 							&& (pt.gender == irr.gender || irr.gender == NotSpecified)) {
-
-						System.out.print("This patient value is "
-								+ Patient.class.getField(checkingVariableName)
-										.get(pt));
+						
+						
+						System.out.println(Patient.class.getField(
+								checkingVariableName).get(pt));
 
 						// there can be a case that when one variable is checked, but several variables are involved. e.g. "Ca:P ratio"
 						if ((Double) Patient.class.getField(
-								checkingVariableName).get(pt) >= irr.unacceptable) {
+								checkingVariableName).get(pt) >= irr.unacceptable && irr.unacceptable!=-1) {
 
 							alerts.addUnacceptable(Arrays
 									.asList(checkingVariableName
-											.split("[,;\\s]")));
+											.split("[\\|;\\s]")));
+							System.out.println("\t\t---unacceptable");
 						} else if ((Double) Patient.class.getField(
-								checkingVariableName).get(pt) >= irr.warning) {
+								checkingVariableName).get(pt) >= irr.warning && irr.warning!=-1) {
 
 							alerts.addWarning(Arrays
 									.asList(checkingVariableName
 											.split("[,;\\s]")));
+							System.out.println("\t\t---warning");
 						} else {
-							System.out
-									.println(". The dosage is within reference range.");
+							// System.out
+							// .println(". The dosage is within reference range.");
 						}
 					}
 				} else {
@@ -234,13 +255,13 @@ public class RecommendOrderGen {
 	 * @param pt
 	 */
 	private static void calculation4Cheking(Patient pt) {
-		pt.inputNa_mEq_l=pt.inputNa_mEq/pt.inputTotalVolume;
-		pt.inputK_mEq_l=pt.inputK_mEq/pt.inputTotalVolume;
-		pt.inputCl_mEq_l=pt.inputCl_mEq/pt.inputTotalVolume;
-		pt.inputAcet_mEq_l=pt.inputAcet_mEq/pt.inputTotalVolume;
-		pt.inputZn_mg_l=pt.inputZn_mg/pt.inputTotalVolume;
-		pt.inputRanitidine_mg_Kg=pt.inputRanitidine/pt.weight;
-		
+		pt.inputNa_mEq_l = pt.inputNa_mEq / pt.inputTotalVolume_ml;
+		pt.inputK_mEq_l = pt.inputK_mEq / pt.inputTotalVolume_ml;
+		pt.inputCl_mEq_l = pt.inputCl_mEq / pt.inputTotalVolume_ml;
+		pt.inputAcet_mEq_l = pt.inputAcet_mEq / pt.inputTotalVolume_ml;
+		pt.inputZn_mg_l = pt.inputZn / pt.inputTotalVolume_ml;
+		pt.inputRanitidine_mg_Kg = pt.inputRanitidine / pt.weight;
+
 	}
 
 	/**
@@ -260,7 +281,7 @@ public class RecommendOrderGen {
 				// skip first title row and blank rows
 				if (line.startsWith("description") || line.startsWith(",,"))
 					continue;
-				// use comma as separator
+				// use comma as separator, keep blank columns
 				String[] reference = line.split(",", -1);
 
 				IngredientReferenceRange irr = new IngredientReferenceRange(
