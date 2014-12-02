@@ -43,12 +43,12 @@ public class TPNCalculator {
 		pt.requiredProteinPerKg = requiredProteinPerKg(pt.age, pt.weight);
 		pt.requiredLipidPerKg = requiredFatPerKg(pt.age, pt.weight);
 		// other ingredient (need to check the KB last column's unit)
-		pt.requiredZn = requiredZn_mg_PerKg(pt.weight);
-		pt.requiredCu = requiredCu_mg_PerKg(pt.weight);
-		pt.requiredMn = requiredMn_mg_PerKg(pt.weight);
-		pt.requiredCr = requiredCr_mg_PerKg(pt.weight);
-		pt.requiredSel = requiredSel_mg_PerKg(pt.weight);
-		pt.requiredIo = requiredIo_mg_PerKg(pt.weight);
+		pt.requiredZn = requiredZn_mcg_PerKg(pt.weight);
+		pt.requiredCu = requiredCu_mcg_PerKg(pt.weight);
+		pt.requiredMn = requiredMn_mcg_PerKg(pt.weight);
+		pt.requiredCr = requiredCr_mcg_PerKg(pt.weight);
+		pt.requiredSel = requiredSel_mcg_PerKg(pt.weight);
+		pt.requiredIo = requiredIo_mcg_PerKg(pt.weight);
 
 		// -1 means not default value, use these ingredients as needed
 		pt.requiredFe = NotSpecified;
@@ -121,7 +121,7 @@ public class TPNCalculator {
 		return calculateCrCl(pt, pt.sCr);
 	}
 
-	private static double requiredZn_mg_PerKg(double weight) {
+	private static double requiredZn_mcg_PerKg(double weight) {
 		// TODO Auto-generated method stub
 		double output = NotSpecified;
 		if (weight < 3) {
@@ -131,10 +131,10 @@ public class TPNCalculator {
 		} else {
 			output = 2500 / weight;
 		}
-		return output/1000;
+		return output;
 	}
 
-	private static double requiredCu_mg_PerKg(double weight) {
+	private static double requiredCu_mcg_PerKg(double weight) {
 		// TODO Auto-generated method stub
 		double output = NotSpecified;
 		if (weight < 3) {
@@ -144,10 +144,10 @@ public class TPNCalculator {
 		} else {
 			output = 500 / weight;
 		}
-		return output/1000;
+		return output;
 	}
 
-	private static double requiredMn_mg_PerKg(double weight) {
+	private static double requiredMn_mcg_PerKg(double weight) {
 		// TODO Auto-generated method stub
 		double output = NotSpecified;
 		if (weight < 3) {
@@ -157,10 +157,10 @@ public class TPNCalculator {
 		} else {
 			output = 150 / weight;
 		}
-		return output/1000;
+		return output;
 	}
 
-	private static double requiredCr_mg_PerKg(double weight) {
+	private static double requiredCr_mcg_PerKg(double weight) {
 		// TODO Auto-generated method stub
 		double output = NotSpecified;
 		if (weight < 3) {
@@ -170,10 +170,10 @@ public class TPNCalculator {
 		} else {
 			output = 10 / weight;
 		}
-		return output/1000;
+		return output;
 	}
 
-	private static double requiredSel_mg_PerKg(double weight) {
+	private static double requiredSel_mcg_PerKg(double weight) {
 		// TODO Auto-generated method stub
 		double output = NotSpecified;
 		if (weight < 3) {
@@ -183,10 +183,10 @@ public class TPNCalculator {
 		} else {
 			output = 30 / weight;
 		}
-		return output/1000;
+		return output;
 	}
 
-	private static double requiredIo_mg_PerKg(double weight) {
+	private static double requiredIo_mcg_PerKg(double weight) {
 		// TODO Auto-generated method stub
 		double output = NotSpecified;
 		if (weight < 3) {
@@ -196,7 +196,7 @@ public class TPNCalculator {
 		} else {
 			output = 2;
 		}
-		return output/1000;
+		return output;
 	}
 
 	private static double requiredRanitidine_mg(double weight) {

@@ -123,8 +123,8 @@ public class RecommendOrderGen {
 		pt.twoInOne_mosm_l = (pt.protein_g_day * 10 + pt.dextrose_g_day * 5
 				+ pt.inputNa_mEq * 2 + pt.inputP_mmol * 2 + pt.inputMg_mEq
 				+ pt.inputK_mEq * 2 + pt.inputCa_mEq * 1.46)
-				/ pt.inputTotalVolume_ml;
-		pt.lipid_mosm_l = pt.lipid_ml_day * 0.26 / pt.inputTotalVolume_ml;
+				/ pt.inputTotalVolume_ml*1000;
+		pt.lipid_mosm_l = pt.lipid_ml_day * 0.26 / pt.inputTotalVolume_ml*1000;
 		pt.threeInOne_mosm_l = pt.twoInOne_mosm_l + pt.lipid_mosm_l;
 
 		// calculate middle table
@@ -151,11 +151,11 @@ public class RecommendOrderGen {
 
 		// calculate the 2nd middle table;
 		pt.dex_mgKgMin = pt.dextrose_g_kg * 1000 / (pt.pnhours * 60);
-		pt.na_meq_l = pt.inputNa_mEq / pt.inputTotalVolume_ml;
+		pt.na_meq_l = pt.inputNa_mEq / pt.inputTotalVolume_ml*1000;
 		pt.k_meq_kg_h = pt.inputKPerKg / pt.pnhours;
-		pt.k_meq_l = pt.inputK_mEq / pt.inputTotalVolume_ml;
+		pt.k_meq_l = pt.inputK_mEq / pt.inputTotalVolume_ml*1000;
 
-		pt.cl_mEq_l = pt.inputCl_mEq / pt.inputVolumePerKg;
+		pt.cl_mEq_l = pt.inputCl_mEq / pt.inputTotalVolume_ml*1000;
 
 		pt.kcal_n_ratio = (pt.lipid_g_day * 2 + pt.dextrose_g_day * 2.38 + pt.protein_g_day * 0.6)
 				/ pt.protein_g_day * 6.25;
