@@ -220,7 +220,7 @@ public class TPNCalculator {
 				pt.requiredIo, pt.requiredFe, pt.requiredVitMix,
 				pt.requiredVitK, pt.requiredVitC, pt.requiredVolumePerKg,
 				pt.requiredLipidPerKg, pt.requiredRanitidine,
-				pt.requiredInsulin, pt.otherFluid_ml, 12,2, NotSpecified);
+				pt.requiredInsulin, pt.otherFluid_ml, 12, 2, NotSpecified);
 	}
 
 	public static void updateInput(Patient pt, double inputProteinPerKg,
@@ -232,7 +232,7 @@ public class TPNCalculator {
 			double inputVitMix, double inputVitK, double inputVitC,
 			double inputVolumePerKg, double inputLipidPerKg,
 			double inputRanitidine, double inputInsulin, double otherFluid_ml,
-			double pnhours, double lipidhours,int ivType) {
+			double pnhours, double lipidhours, int ivType) {
 		// update inputTotalVolume_ml and inputKcal based on which variable the user changes
 		// !!!!!!make sure each time only one variable is changed!!!!
 		if (pt.inputVolumePerKg != inputVolumePerKg) {
@@ -250,7 +250,7 @@ public class TPNCalculator {
 			// if inputDextrose_perc changes, then fix the inputTotalVolume_ml, dextrose and total kcal will change
 			// dextrose amount will be calculated in RecommendOrderGen
 			pt.inputKcal = pt.inputKcal + pt.inputTotalVolume_ml
-					* (inputDextrose_perc - pt.inputDextrose_perc) * 2.38;
+					* (inputDextrose_perc - pt.inputDextrose_perc) * 2.38 / 0.7;
 			pt.inputDextrose_perc = inputDextrose_perc;
 		} else if (pt.inputProteinPerKg != inputProteinPerKg) {
 			// if protein changes, then total kcal changes accordingly, total volume will be assumed as the same by adjust water accordingly
@@ -274,8 +274,7 @@ public class TPNCalculator {
 		if (pt.inputDextrose_perc == 0 && pt.requiredDextrose_perc != -1) {
 			pt.inputDextrose_perc = pt.requiredDextrose_perc;
 		} else if (pt.inputDextrose_perc == 0 && pt.dextrose_g_day != 0) {
-			pt.inputDextrose_perc = pt.dextrose_g_day / 0.7
-					/ pt.inputTotalVolume_ml;
+			pt.inputDextrose_perc = pt.dextrose_g_day / pt.inputTotalVolume_ml;
 		}
 
 		if (pt.inputProteinPerKg == 0)
@@ -306,7 +305,7 @@ public class TPNCalculator {
 		pt.otherFluid_ml = otherFluid_ml;
 
 		pt.pnhours = pnhours;
-		pt.lipidhours=lipidhours;
+		pt.lipidhours = lipidhours;
 
 		pt.inputNa_mEq = pt.inputNaPerKg * pt.weight;
 		pt.inputK_mEq = pt.inputKPerKg * pt.weight;
@@ -330,16 +329,20 @@ public class TPNCalculator {
 	 * @return adjustedBodyWeight, idealBodyWeight
 	 */
 	private static void calBodyWeights(Patient pt) {
-		if (pt.gender == FEMALE) {
-			pt.idealBodyWeight = (45.5 + 2.3 * ((pt.height * 0.39 - 60)>0?(pt.height * 0.39 - 60):0));
-		} else {
-			pt.idealBodyWeight = (50 + 2.3 * ((pt.height * 0.39 - 60)>0?(pt.height * 0.39 - 60):0));
-		}
-		pt.adjustedBodyWeight = 0.6 * pt.idealBodyWeight + 0.4 * pt.weight;
+		if (pt.age >= 18 && pt.height >= 150) {
+			if (pt.gender == FEMALE) {
+				pt.idealBodyWeight = (45.5 + 2.3 * ((pt.height * 0.39 - 60) > 0 ? (pt.height * 0.39 - 60)
+						: 0));
+			} else {
+				pt.idealBodyWeight = (50 + 2.3 * ((pt.height * 0.39 - 60) > 0 ? (pt.height * 0.39 - 60)
+						: 0));
+			}
+			pt.adjustedBodyWeight = 0.6 * pt.idealBodyWeight + 0.4 * pt.weight;
 
-		// rule from Scott's note
-		if (pt.weight > 1.3 * pt.idealBodyWeight) {
-			pt.weight = pt.adjustedBodyWeight;
+			// rule from Scott's note
+			if (pt.weight > 1.3 * pt.idealBodyWeight) {
+				pt.weight = pt.adjustedBodyWeight;
+			}
 		}
 	}
 
@@ -574,8 +577,8 @@ public class TPNCalculator {
 	 * @return mEq/kg/day
 	 */
 	private static double requiredMagnesiumPerKg(double age, double weight) {
-		
-			return 0.3;
+
+		return 0.3;
 	}
 
 	/**

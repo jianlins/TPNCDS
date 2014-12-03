@@ -100,7 +100,7 @@ public class RecommendOrderGen {
 			patient.inputDextrose_perc = med6392 / patient.inputVolumePerKg;
 		} else {
 			med6392 = patient.inputVolumePerKg * patient.weight
-					* patient.inputDextrose_perc/100;
+					* patient.inputDextrose_perc/70;
 		}
 		// (patient.inputKcal - med27370 * 2) / 2.38;
 
