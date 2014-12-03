@@ -222,7 +222,7 @@ public class TPNCalculator {
 				pt.requiredIo, pt.requiredFe, pt.requiredVitMix,
 				pt.requiredVitK, pt.requiredVitC, pt.requiredVolumePerKg,
 				pt.requiredLipidPerKg, pt.requiredRanitidine,
-				pt.requiredInsulin, pt.otherFluid_ml, 12, 2, NotSpecified);
+				pt.requiredInsulin, pt.otherFluid_ml, 24, 24, NotSpecified);
 	}
 
 	public static void updateInput(Patient pt, double inputProteinPerKg,
