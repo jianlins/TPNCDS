@@ -32,6 +32,8 @@ public class TPNCalculator {
 		pt.requiredVolumePerKg = pt.requiredTotalVolume / pt.weight;
 		pt.requiredAdjustedKcal = calRequiredAdjustedKcal(pt.age, pt.gender,
 				pt.weight, pt.height, pt.stressor);
+		pt.requiredAdjustedKcalPerKg=pt.requiredAdjustedKcal/pt.weight;
+		
 		// main ingredient
 		pt.requiredNaPerKg = requiredSodiumPerKg(pt.age, pt.weight);
 		pt.requiredKPerKg = requiredPotassiumPerKg(pt.age, pt.weight);
