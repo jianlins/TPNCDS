@@ -331,9 +331,9 @@ public class TPNCalculator {
 	 */
 	private static void calBodyWeights(Patient pt) {
 		if (pt.gender == FEMALE) {
-			pt.idealBodyWeight = (45.5 + 2.3 * (pt.height * 0.39 - 60));
+			pt.idealBodyWeight = (45.5 + 2.3 * ((pt.height * 0.39 - 60)>0?(pt.height * 0.39 - 60):0));
 		} else {
-			pt.idealBodyWeight = (50 + 2.3 * (pt.height * 0.39 - 60));
+			pt.idealBodyWeight = (50 + 2.3 * ((pt.height * 0.39 - 60)>0?(pt.height * 0.39 - 60):0));
 		}
 		pt.adjustedBodyWeight = 0.6 * pt.idealBodyWeight + 0.4 * pt.weight;
 
