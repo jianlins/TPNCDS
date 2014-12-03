@@ -123,8 +123,9 @@ public class RecommendOrderGen {
 		pt.twoInOne_mosm_l = (pt.protein_g_day * 10 + pt.dextrose_g_day * 5
 				+ pt.inputNa_mEq * 2 + pt.inputP_mmol * 2 + pt.inputMg_mEq
 				+ pt.inputK_mEq * 2 + pt.inputCa_mEq * 1.46)
-				/ pt.inputTotalVolume_ml*1000;
-		pt.lipid_mosm_l = pt.lipid_ml_day * 0.26 / pt.inputTotalVolume_ml*1000;
+				/ pt.inputTotalVolume_ml * 1000;
+		pt.lipid_mosm_l = pt.lipid_ml_day * 0.26 / pt.inputTotalVolume_ml
+				* 1000;
 		pt.threeInOne_mosm_l = pt.twoInOne_mosm_l + pt.lipid_mosm_l;
 
 		// calculate middle table
@@ -151,19 +152,19 @@ public class RecommendOrderGen {
 
 		// calculate the 2nd middle table;
 		pt.dex_mgKgMin = pt.dextrose_g_kg * 1000 / (pt.pnhours * 60);
-		pt.na_meq_l = pt.inputNa_mEq / pt.inputTotalVolume_ml*1000;
+		pt.na_meq_l = pt.inputNa_mEq / pt.inputTotalVolume_ml * 1000;
 		pt.k_meq_kg_h = pt.inputKPerKg / pt.pnhours;
-		pt.k_meq_l = pt.inputK_mEq / pt.inputTotalVolume_ml*1000;
+		pt.k_meq_l = pt.inputK_mEq / pt.inputTotalVolume_ml * 1000;
 
-		pt.cl_mEq_l = pt.inputCl_mEq / pt.inputTotalVolume_ml*1000;
+		pt.cl_mEq_l = pt.inputCl_mEq / pt.inputTotalVolume_ml * 1000;
 
 		pt.kcal_n_ratio = (pt.lipid_g_day * 2 + pt.dextrose_g_day * 2.38 + pt.protein_g_day * 0.6)
 				/ pt.protein_g_day * 6.25;
 
 		pt.ca_mEq_day = pt.inputCa_mEq;
 		pt.p_mmol_day = pt.inputP_mmol;
-//		 display this as: "1:"+pt.ca_p_ratio 
-		pt.ca_p_ratio =  pt.p_mmol_day/pt.ca_mEq_day;
+		// display this as: "1:"+pt.ca_p_ratio
+		pt.ca_p_ratio = pt.p_mmol_day / pt.ca_mEq_day;
 		pt.ca_mg_x_p_mg = pt.ca_mEq_day * 20 * pt.p_mmol_day / 31;
 
 		// need to check if the factor is 6.25;
@@ -171,12 +172,9 @@ public class RecommendOrderGen {
 				/ pt.protein_g_day * 6.25;
 		// faked number for now
 		pt.precip_limit = 78.0;
-		
-		pt.lipid_rate=pt.lipid_ml_day/pt.lipidhours;
-		pt.pn_rate=pt.pn_ml_day/pt.lipidhours;
-		
-		
-		
+
+		pt.lipid_rate = pt.lipid_ml_day / pt.lipidhours;
+		pt.pn_rate = pt.pn_ml_day / pt.lipidhours;
 
 	}
 
@@ -211,21 +209,22 @@ public class RecommendOrderGen {
 							&& ((pt.ivType == irr.ivType || irr.ivType == IVTYPE.NotSpecified) && irr.ivType != IVTYPE.Deep)
 							// if the patient's gender is the same as knowledge base or the gender is not specified in knowledge base
 							&& (pt.gender == irr.gender || irr.gender == NotSpecified)) {
-						
-						
+
 						System.out.println(Patient.class.getField(
 								checkingVariableName).get(pt));
 
 						// there can be a case that when one variable is checked, but several variables are involved. e.g. "Ca:P ratio"
 						if ((Double) Patient.class.getField(
-								checkingVariableName).get(pt) >= irr.unacceptable && irr.unacceptable!=-1) {
+								checkingVariableName).get(pt) >= irr.unacceptable
+								&& irr.unacceptable != -1) {
 
 							alerts.addUnacceptable(Arrays
 									.asList(checkingVariableName
 											.split("[\\|;\\s]")));
 							System.out.println("\t\t---unacceptable");
 						} else if ((Double) Patient.class.getField(
-								checkingVariableName).get(pt) >= irr.warning && irr.warning!=-1) {
+								checkingVariableName).get(pt) >= irr.warning
+								&& irr.warning != -1) {
 
 							alerts.addWarning(Arrays
 									.asList(checkingVariableName
