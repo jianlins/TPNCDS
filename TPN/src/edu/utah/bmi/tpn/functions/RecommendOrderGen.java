@@ -162,6 +162,7 @@ public class RecommendOrderGen {
 
 		pt.ca_mEq_day = pt.inputCa_mEq;
 		pt.p_mmol_day = pt.inputP_mmol;
+//		 display this as: "1:"+pt.ca_p_ratio 
 		pt.ca_p_ratio =  pt.p_mmol_day/pt.ca_mEq_day;
 		pt.ca_mg_x_p_mg = pt.ca_mEq_day * 20 * pt.p_mmol_day / 31;
 
