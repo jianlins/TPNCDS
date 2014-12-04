@@ -95,12 +95,12 @@ public class RecommendOrderGen {
 		med19726 = patient.inputNa_mEq / 4 - med19769;
 
 		// 6392 DEXTROSE 70 % IV SOLN 0.7 g 2.38 kcal
-		if (patient.inputDextrose_perc == 0) {
+		if (patient.inputDextrose_perc == 0 || patient.inputDextrose_perc == -1) {
 			med6392 = (patient.inputKcal - med27370 * 2) / 2.38;
 			patient.inputDextrose_perc = med6392 / patient.inputVolumePerKg;
 		} else {
 			med6392 = patient.inputVolumePerKg * patient.weight
-					* patient.inputDextrose_perc/70;
+					* patient.inputDextrose_perc / 70;
 		}
 		// (patient.inputKcal - med27370 * 2) / 2.38;
 
@@ -119,11 +119,6 @@ public class RecommendOrderGen {
 		pt.pn_ml_kg = pt.pn_ml_day / pt.weight;
 		pt.total_ml_kg = pt.total_ml_day / pt.weight;
 
-
-		
-
-		
-		
 		// calculate middle table
 		pt.lipid_g_day = pt.inputLipid_g;
 		pt.dextrose_g_day = med6392 * 0.7;
@@ -135,9 +130,9 @@ public class RecommendOrderGen {
 		pt.lipid_g_kg = pt.lipid_g_day / pt.weight;
 		pt.total_g_kg = pt.total_g_day / pt.weight;
 
-		pt.dextrose_cal_kg = pt.dextrose_g_kg * 2.38/0.7;
-		pt.protein_cal_kg = pt.protein_g_kg * 0.6/0.15;
-		pt.lipid_cal_kg = pt.lipid_g_kg * 2/0.2;
+		pt.dextrose_cal_kg = pt.dextrose_g_kg * 2.38 / 0.7;
+		pt.protein_cal_kg = pt.protein_g_kg * 0.6 / 0.15;
+		pt.lipid_cal_kg = pt.lipid_g_kg * 2 / 0.2;
 		pt.total_cal_kg = pt.dextrose_cal_kg + pt.lipid_cal_kg
 				+ pt.protein_cal_kg;
 
@@ -145,32 +140,28 @@ public class RecommendOrderGen {
 		pt.protein_perc_cal = pt.protein_cal_kg / pt.total_cal_kg * 100;
 		pt.lipid_perc_cal = pt.lipid_cal_kg / pt.total_cal_kg * 100;
 		pt.total_perc_cal = 100;
-		
-		
-		// calculate the top right table;
-//		this calculation is assuming lipid is added into TPN
-//		pt.twoInOne_mosm_l = (pt.protein_g_day * 10 + pt.dextrose_g_day * 5
-//				+ pt.inputNa_mEq * 2 + pt.inputP_mmol * 2 + pt.inputMg_mEq
-//				+ pt.inputK_mEq * 2 + pt.inputCa_mEq * 1.46)
-//				/ pt.inputTotalVolume_ml * 1000;
-//		pt.lipid_mosm_l = 0.26;
-//		pt.threeInOne_mosm_l = (pt.protein_g_day * 10 + pt.dextrose_g_day * 5
-//				+ pt.inputNa_mEq * 2 + pt.inputP_mmol * 2 + pt.inputMg_mEq
-//				+ pt.inputK_mEq * 2 + pt.inputCa_mEq * 1.46+pt.lipid_ml_day * 0.26)
-//				/ pt.inputTotalVolume_ml * 1000;
 
-		
+		// calculate the top right table;
+		// this calculation is assuming lipid is added into TPN
+		// pt.twoInOne_mosm_l = (pt.protein_g_day * 10 + pt.dextrose_g_day * 5
+		// + pt.inputNa_mEq * 2 + pt.inputP_mmol * 2 + pt.inputMg_mEq
+		// + pt.inputK_mEq * 2 + pt.inputCa_mEq * 1.46)
+		// / pt.inputTotalVolume_ml * 1000;
+		// pt.lipid_mosm_l = 0.26;
+		// pt.threeInOne_mosm_l = (pt.protein_g_day * 10 + pt.dextrose_g_day * 5
+		// + pt.inputNa_mEq * 2 + pt.inputP_mmol * 2 + pt.inputMg_mEq
+		// + pt.inputK_mEq * 2 + pt.inputCa_mEq * 1.46+pt.lipid_ml_day * 0.26)
+		// / pt.inputTotalVolume_ml * 1000;
+
 		pt.twoInOne_mosm_l = (pt.protein_g_day * 10 + pt.dextrose_g_day * 5
 				+ pt.inputNa_mEq * 2 + pt.inputP_mmol * 2 + pt.inputMg_mEq
 				+ pt.inputK_mEq * 2 + pt.inputCa_mEq * 1.46)
-				/ (pt.inputTotalVolume_ml-pt.lipid_ml_day) * 1000;
+				/ (pt.inputTotalVolume_ml - pt.lipid_ml_day) * 1000;
 		pt.lipid_mosm_l = 0.26;
 		pt.threeInOne_mosm_l = (pt.protein_g_day * 10 + pt.dextrose_g_day * 5
 				+ pt.inputNa_mEq * 2 + pt.inputP_mmol * 2 + pt.inputMg_mEq
-				+ pt.inputK_mEq * 2 + pt.inputCa_mEq * 1.46+pt.lipid_ml_day * 0.26)
+				+ pt.inputK_mEq * 2 + pt.inputCa_mEq * 1.46 + pt.lipid_ml_day * 0.26)
 				/ pt.inputTotalVolume_ml * 1000;
-		
-		
 
 		// calculate the 2nd middle table;
 		pt.dex_mgKgMin = pt.dextrose_g_kg * 1000 / (pt.pnhours * 60);
