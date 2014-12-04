@@ -77,7 +77,7 @@ public class DemoTPN {
 
 	}
 
-	private static void printVariables(Patient patient1) {
+	public static void printVariables(Patient patient1) {
 		System.out
 				.println("\n********************************************************************************\n");
 		Field[] fields = patient1.getClass().getDeclaredFields();

@@ -248,7 +248,7 @@ public class TPNCalculator {
 			pt.inputKcal = pt.inputKcal
 					+ (inputLipidPerKg * pt.weight - pt.inputLipid_g) * 2;
 			pt.inputLipidPerKg = inputLipidPerKg;
-		} else if (pt.inputDextrose_perc != inputDextrose_perc) {
+		} else if (pt.inputDextrose_perc!=inputDextrose_perc && inputDextrose_perc!=-1 && inputDextrose_perc!=0) {
 			// if inputDextrose_perc changes, then fix the inputTotalVolume_ml, dextrose and total kcal will change
 			// dextrose amount will be calculated in RecommendOrderGen
 			pt.inputKcal = pt.inputKcal + pt.inputTotalVolume_ml
