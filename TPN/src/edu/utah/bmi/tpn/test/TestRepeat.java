@@ -28,7 +28,7 @@ public class TestRepeat {
 		
 
 		TPNCalculator.updateInput(pt, pt.inputProteinPerKg,
-				pt.inputDextrose_perc, pt.inputCysMgPerg, pt.inputNaPerKg,
+				pt.requiredDextrose_perc, pt.inputCysMgPerg, pt.inputNaPerKg,
 				pt.inputKPerKg, pt.inputClPerKg, pt.inputAcetPerKg,
 				pt.inputMgPerKg, pt.inputCaPerKg, pt.inputPPerKg, pt.inputZn,
 				pt.inputCu, pt.inputMn, pt.inputCr, pt.inputSel, pt.inputIo,

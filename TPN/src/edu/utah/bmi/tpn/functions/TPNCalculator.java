@@ -32,8 +32,8 @@ public class TPNCalculator {
 		pt.requiredVolumePerKg = pt.requiredTotalVolume / pt.weight;
 		pt.requiredAdjustedKcal = calRequiredAdjustedKcal(pt.age, pt.gender,
 				pt.weight, pt.height, pt.stressor);
-		pt.requiredAdjustedKcalPerKg=pt.requiredAdjustedKcal/pt.weight;
-		
+		pt.requiredAdjustedKcalPerKg = pt.requiredAdjustedKcal / pt.weight;
+
 		// main ingredient
 		pt.requiredNaPerKg = requiredSodiumPerKg(pt.age, pt.weight);
 		pt.requiredKPerKg = requiredPotassiumPerKg(pt.age, pt.weight);
@@ -248,11 +248,13 @@ public class TPNCalculator {
 			pt.inputKcal = pt.inputKcal
 					+ (inputLipidPerKg * pt.weight - pt.inputLipid_g) * 2;
 			pt.inputLipidPerKg = inputLipidPerKg;
-		} else if (pt.inputDextrose_perc!=inputDextrose_perc && inputDextrose_perc!=-1 && inputDextrose_perc!=0) {
+		} else if (pt.inputDextrose_perc != inputDextrose_perc) {
 			// if inputDextrose_perc changes, then fix the inputTotalVolume_ml, dextrose and total kcal will change
 			// dextrose amount will be calculated in RecommendOrderGen
-			pt.inputKcal = pt.inputKcal + pt.inputTotalVolume_ml
-					* (inputDextrose_perc - pt.inputDextrose_perc) * 2.38 / 0.7;
+			if (inputDextrose_perc != -1 && inputDextrose_perc != 0)
+				pt.inputKcal = pt.inputKcal + pt.inputTotalVolume_ml
+						* (inputDextrose_perc - pt.inputDextrose_perc) * 2.38
+						/ 0.7;
 			pt.inputDextrose_perc = inputDextrose_perc;
 		} else if (pt.inputProteinPerKg != inputProteinPerKg) {
 			// if protein changes, then total kcal changes accordingly, total volume will be assumed as the same by adjust water accordingly
